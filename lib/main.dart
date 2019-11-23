@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:bloc_example/src/blocs/counter_bloc/counter_bloc.dart';
+import 'dart:math';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -24,11 +24,11 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: StreamBuilder<int>(
-            stream: counterBloc.pressedCount,
+        title: StreamBuilder<String>(
+            stream: counterBloc.merge,
             builder: (context, snapshot) {
               return Text(
-                'Flutter Counter Bloc Example - ${snapshot.data.toString()}',
+                'Flutter Observable - ${snapshot.data.toString()}',
               );
             }),
       ),
@@ -37,10 +37,10 @@ class MyHomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'You have pushed the button this many times:',
+              'Data from 3 streams:',
             ),
-            StreamBuilder<int>(
-                stream: counterBloc.pressedCount,
+            StreamBuilder<String>(
+                stream: counterBloc.merge,
                 builder: (context, snapshot) {
                   return Text(
                     '${snapshot.data.toString()}',
@@ -55,11 +55,13 @@ class MyHomePage extends StatelessWidget {
         height: 100.0,
         child: FloatingActionButton(
           onPressed: () {
-            counterBloc.incrementCounter.add(null);
+            counterBloc.add1.add(Random().nextInt(10));
+            counterBloc.add2.add(Random().nextInt(10));
+            counterBloc.add3.add(Random().nextInt(10));
           },
           tooltip: 'Increment',
           child: Text(
-            "+ \n send \n to BLoC",
+            "stream1,2,3",
             textAlign: TextAlign.center,
           ),
         ),

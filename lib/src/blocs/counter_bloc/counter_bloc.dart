@@ -2,28 +2,29 @@ import 'dart:async';
 import 'package:rxdart/rxdart.dart';
 
 class CounterBloc {
-  int _counter;
+  static final _stream1 = BehaviorSubject<int>.seeded(1);
+  static final _stream2 = BehaviorSubject<int>.seeded(1);
+  static final _stream3 = BehaviorSubject<int>.seeded(1);
 
-  CounterBloc() {
-    _counter = 1;
-    _actionController.stream.listen(_increaseStream);
-  }
+  Stream get pressed1 => _stream1.stream;
+  Sink get add1 => _stream1.sink;
 
-  final _counterStream = BehaviorSubject<int>.seeded(1);
+  Stream get pressed2 => _stream2.stream;
+  Sink get add2 => _stream2.sink;
 
-  Stream get pressedCount => _counterStream.stream;
-  Sink get _addValue => _counterStream.sink;
+  Stream get pressed3 => _stream3.stream;
+  Sink get add3 => _stream3.sink;
 
-  StreamController _actionController = StreamController();
-  StreamSink get incrementCounter => _actionController.sink;
-
-  void _increaseStream(data) {
-    _counter += 1;
-    _addValue.add(_counter);
-  }
+  Observable<String> get merge => Observable.zip3(
+      _stream1,
+      _stream2,
+      _stream3,
+      (one, two, three) =>
+          (one.toString() + two.toString() + three.toString()));
 
   void dispose() {
-    _counterStream.close();
-    _actionController.close();
+    _stream1.close();
+    _stream2.close();
+    _stream3.close();
   }
 }
